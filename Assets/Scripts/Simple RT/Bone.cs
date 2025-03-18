@@ -11,10 +11,49 @@ public class Bone : MonoBehaviour
     public Canvas canvas;
     public GameObject scoreContainer;
     public AudioSource boneThrow; // Barking on early press
+    public Image cornerSquare; // Reference to the square in the top right corner
+
+    /* For local game with white/black square:
+            Size still doesn't seem to be consistent...
+     */
+
+
+    void Start()
+    {
+        if (cornerSquare == null)
+        {
+            // Get equivalent of 1.5cm
+            double squareSize = 0.015;
+            float dpi = Screen.dpi;
+            double inchSize = squareSize/2.54;
+            float squarePx = (float)(dpi*inchSize);
+
+            // Make square
+            GameObject squareObject = new GameObject("CornerSquare");
+            squareObject.transform.SetParent(canvas.transform);
+
+            RectTransform rectTransform = squareObject.AddComponent<RectTransform>();
+            rectTransform.sizeDelta = new Vector2((float)squarePx, (float)squarePx);
+            rectTransform.anchorMin = new Vector2(1, 1);
+            rectTransform.anchorMax = new Vector2(1, 1);
+            rectTransform.anchoredPosition = Vector2.zero;
+            rectTransform.pivot = new Vector2(1, 1); // make flush with top right corner
+
+            cornerSquare = squareObject.AddComponent<Image>();
+            cornerSquare.color = UnityEngine.Color.white;
+
+            LayoutElement layoutElement = squareObject.AddComponent<LayoutElement>();
+            layoutElement.ignoreLayout = true;
+        }
+    }
 
     // SHOW/HIDE ------------------
     public void Hide(){
         image.enabled = false; // Hide bone
+        if (cornerSquare != null)
+        {
+            cornerSquare.color = UnityEngine.Color.white; // Reset color to white
+        }
     }
 
     public bool Hidden(){
@@ -25,6 +64,12 @@ public class Bone : MonoBehaviour
         RandomTransform(); // Change position
         Dictionary<string, float> stimSpec = GetTransform();
         image.enabled = true; // Show bone
+
+        if (cornerSquare != null)
+        {
+            cornerSquare.color = UnityEngine.Color.black; // Change color to black when the bone appears
+        }
+
         return stimSpec;
     }
 

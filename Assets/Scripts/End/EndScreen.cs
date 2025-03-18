@@ -30,7 +30,7 @@ public class EndScreen : MonoBehaviour
     void Start()
     {
         // Send experimental data
-        DataManager.Instance.SendData();
+        // DataManager.Instance.SendData();
         fullscreenManager.ToggleFullscreen();
         // Clear trials ahead of repeat - probably just do this on a 'repeat' button listener
         //data.ClearTrials();
